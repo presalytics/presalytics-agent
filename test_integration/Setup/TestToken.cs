@@ -11,7 +11,8 @@ namespace test_integration.Setup
             dynamic Token = new ExpandoObject();
             Token.sub = Guid.NewGuid();
             Token.permissions = new [] {"builder", "viewer"};
-            ((IDictionary<string, Object>)Token).Add("https://api.presalytics.io/api_user_id", Guid.NewGuid().ToString());
+            string userId = System.Environment.GetEnvironmentVariable("TEST_USER_ID");
+            ((IDictionary<string, Object>)Token).Add("https://api.presalytics.io/api_user_id", userId);
             return (dynamic)Token;
         }
     }

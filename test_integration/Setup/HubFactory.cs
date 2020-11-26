@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using System.Net.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Net;
 using Serilog;
 using WebMotions.Fake.Authentication.JwtBearer;
@@ -35,7 +38,6 @@ namespace test_integration.Setup
                 services.Remove(services.SingleOrDefault(d => d.ServiceType == typeof(IHttpClientFactory)));
                 services.AddSingleton<IHttpClientFactory>(sp => MockHttpClientFactory.GetMockFactory().Object);
                 services.AddAuthentication(FakeJwtBearerDefaults.AuthenticationScheme).AddFakeJwtBearer();
-                
             });
         }
     }

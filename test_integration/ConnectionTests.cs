@@ -31,12 +31,22 @@ namespace test_integration
         [Fact]
         public async Task SyncAgent_ReturnsAgentId()
         {
+
+            //Setup
+            var clientClient = _clientFactory.CreateClient();
+
+            clientClient.SetFakeBearerToken((object)_token);
+            
             var hubClient = _hubFactory.CreateClient();
 
             hubClient.SetFakeBearerToken((object)_token);
 
+            //Act
+            var agentIdResponse = await clientClient.GetAsync("/agent");
+
             HttpResponseMessage resp = await hubClient.GetAsync("/status");
 
+            //assert
             resp.EnsureSuccessStatusCode();
 
         }

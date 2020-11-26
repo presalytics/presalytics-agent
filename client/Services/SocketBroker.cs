@@ -19,9 +19,10 @@ namespace client.Services
         public IWorkspace Workspace { get; set;}
 
         private ILogger _logger { get; set;}
-        public SocketBroker(IWorkspace workspace, ILogger logger)
+        public SocketBroker(IWorkspace workspace, ILogger logger, ISignalRClientMaster socket)
         {
             Workspace = workspace;
+            Socket = socket;
             _logger = logger;
         }
 

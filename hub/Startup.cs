@@ -100,6 +100,7 @@ namespace hub
             services.AddHttpClient("website", options => {
                 options.BaseAddress = new Uri(Configuration.GetValue<string>("WEBSITE_URL"));
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,7 +111,6 @@ namespace hub
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UsePresalyticsCookieMiddleware();   
             app.UseRouting();
 
             app.UseAuthentication();

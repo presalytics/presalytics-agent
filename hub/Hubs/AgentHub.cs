@@ -30,6 +30,11 @@ namespace hub.Hubs
             return Clients.Client(connectionId).UpdateStory(storyId);
         }
 
+        public Task GetStatus(string userId)
+        {
+            return Clients.User(userId).AgentSync();
+        }
+
 
 
         public async Task AgentSync(string agentId)

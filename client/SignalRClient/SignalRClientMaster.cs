@@ -1,30 +1,77 @@
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using Serilog;
-using shared;
+using Microsoft.Extensions.DependencyInjection;
+using shared.Extensions;
+using shared.Exceptions;
+using Microsoft.Net.Http.Headers;
+using client.Services;
 
 namespace client.SignalRClient
 {
     public interface ISignalRClientMaster
     {
-        HubConnection Connection {get; set;}
 
         Task SendStoryToServer(string story);
         Task SyncAgent(string agentId);
+
+        Task<HubConnection> Connect(string url);
+        Task<HubConnection> Connect();
+        string GetHubUrl();
+        void SetHubUrl(string hubUrl);
 
     }
     public class SignalRClientMaster : ISignalRClientMaster
     {
         public string Url { get; set; }
-        public HubConnection Connection { get; set;}
+        private ITokenProvider _tokenProvider {get; set;}
+        private ILogger _logger { get; set;}
+
+        private Dictionary<string, HubConnection> _userConnections { get; set;}
+        private IHttpContextAccessor _httpContextAccessor { get; set;}
+
+        private string _hubUrl { get; set;}
+
+        public SignalRClientMaster(IServiceProvider sp)
+        {
+            
+            _logger = sp.GetRequiredService<ILogger>();
+            _tokenProvider = sp.GetRequiredService<ITokenProvider>();
+            _httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+            _userConnections = new Dictionary<string, HubConnection>();
+        }
+
+        public string GetHubUrl()
+        {
+            return _hubUrl;
+        }
+
+        public void SetHubUrl(string hubUrl)
+        {
+            _hubUrl = hubUrl;
+        }
+
+        public async Task<HubConnection> Connect()
+        {
+            if (_hubUrl == null) {
+                throw new PresalyticsHubConnectionException("HubUrl must be set to use this parameterless connection method.");
+            }
+            return await Connect(_hubUrl); 
+        }
 
     
-        public SignalRClientMaster(string url)
+        public async Task<HubConnection> Connect(string url)
         {
             Url = url;
-            Connection = new HubConnectionBuilder()
-                .WithUrl(Url)
+            HubConnection Connection = new HubConnectionBuilder()
+                .WithUrl(Url, options => {
+                    options.AccessTokenProvider = () => {
+                        return Task.FromResult(_tokenProvider.GetBearerToken());
+                    };
+                })
                 .WithAutomaticReconnect()
                 .Build();
 
@@ -43,17 +90,19 @@ namespace client.SignalRClient
                 OnMessageReceived(args);
             });
 
-            Connection.Closed += error =>
+            Connection.Closed += async (error) =>
             {
                 System.Diagnostics.Debug.Assert(Connection.State == HubConnectionState.Disconnected);
 
-                // Notify users the connection has been closed or manually try to restart the connection.
+                await ConnectWithRetryAsync(Connection);
 
-                return Task.CompletedTask;
             };
 
 
-            Task.Run( () => ConnectWithRetryAsync(Connection));
+            await ConnectWithRetryAsync(Connection);
+            string userId = _httpContextAccessor.HttpContext.GetPresalyticsUserId();
+            _userConnections.Add(userId, Connection);
+            return Connection;
 
         }
     
@@ -66,17 +115,41 @@ namespace client.SignalRClient
 
         public async Task SendStoryToServer(string story)
         {
-            await Connection.InvokeAsync("SetStory", story);
+            HubConnection conn = await GetHubConnection();
+            await conn.InvokeAsync("SetStory", story);
             Log.Information("Story Updated");
         }
 
         public async Task SyncAgent(string agentId)
         {
-            await Connection.InvokeAsync("AgentSync", agentId);
-            Log.Information("AgentId {AgenetId} updated at hub", agentId);
+            HubConnection conn = await GetHubConnection();
+            await conn.InvokeAsync("AgentSync", agentId);
+            Log.Information("AgentId {AgentId} updated at hub", agentId);
         }
 
-        public static async Task<bool> ConnectWithRetryAsync(HubConnection connection)
+        public async Task<HubConnection> GetHubConnection(string userId)
+        {
+            HubConnection conn;
+
+            if (!_userConnections.TryGetValue(userId, out conn))
+            {
+                conn = await Connect();
+            }
+
+            if (conn.State == HubConnectionState.Disconnected) 
+            {
+                await ConnectWithRetryAsync(conn);
+            }
+            return conn;
+        }
+
+        public async Task<HubConnection> GetHubConnection()
+        {
+            string userId = _httpContextAccessor.HttpContext.GetPresalyticsUserId();
+            return await GetHubConnection(userId);
+        }
+
+        public async Task<bool> ConnectWithRetryAsync(HubConnection connection)
         {
             // Keep trying to until we can start or the token is canceled.
             while (true)
@@ -87,8 +160,9 @@ namespace client.SignalRClient
                     System.Diagnostics.Debug.Assert(connection.State == HubConnectionState.Connected);
                     return true;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Log.Error(ex, "Failed to connect to SignalR Hub.");
                     // Failed to connect, trying again in 5000 ms.
                     System.Diagnostics.Debug.Assert(connection.State == HubConnectionState.Disconnected);
                     await Task.Delay(5000);
