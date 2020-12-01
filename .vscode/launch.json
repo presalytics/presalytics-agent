@@ -1,0 +1,55 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Hub Debug",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/hub/bin/Debug/netcoreapp3.1/hub.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/hub",
+            "stopAtEntry": false,
+            "envFile": "${workspaceFolder}/hub/.env",
+        },
+        {
+            "name": "Client Debug",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/client/bin/Debug/netcoreapp3.1/client.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/client",
+            "stopAtEntry": false,
+            "envFile": "${workspaceFolder}/client/.env",
+        },
+        {
+            "name": "Hub With Mocks",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/test_hub/bin/Debug/netcoreapp3.1/test_hub.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/test_hub",
+            "stopAtEntry": false,
+            "envFile": "${workspaceFolder}/hub/.env",
+        },
+        {
+            "name": "Client With Mocks",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/test_client/bin/Debug/netcoreapp3.1/test_client.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/test_client",
+            "stopAtEntry": false,
+            "envFile": "${workspaceFolder}/client/.env",
+        },
+
+
+
+    ]
+}
