@@ -35,11 +35,16 @@ namespace hub.Hubs
             return Clients.User(userId).AgentSync();
         }
 
+        public Task SyncAgent(string agentId, string agentName)
+        {   
+            return _agentManager.SyncAgent(new Guid(agentId), agentName);
+        }
 
 
-        public async Task AgentSync(string agentId)
+
+        public async Task AgentSync(string agentId, string name)
         {
-            await _agentManager.SyncAgent(Guid.Parse(agentId));
+            await _agentManager.SyncAgent(Guid.Parse(agentId), name);
         }
 
 

@@ -18,7 +18,11 @@ namespace client.Services
 
         public string GetBearerToken()
         {
-            return _httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+            if (_httpContextAccessor.HttpContext != null) {
+                return _httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+            }
+            return null;
+
         }
     }
 }

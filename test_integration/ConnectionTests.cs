@@ -9,20 +9,23 @@ using client;
 using WebMotions.Fake.Authentication.JwtBearer;
 using System.Dynamic;
 using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using shared.Models;
+using Microsoft.AspNetCore.Http;
 
 
 namespace test_integration
 {
-    public class ConnectionTests : IClassFixture<HubFactory<hub.Startup>>, IClassFixture<ClientFactory<client.Startup>>
+    public class ConnectionTests : IClassFixture<ClientFactory<client.Startup>>
     {
-        private readonly HubFactory<hub.Startup> _hubFactory;
         private readonly ClientFactory<client.Startup>  _clientFactory;
 
         private  dynamic _token;
 
-        public ConnectionTests(HubFactory<hub.Startup> hubFactory, ClientFactory<client.Startup> clientFactory)
+        public ConnectionTests(ClientFactory<client.Startup> clientFactory)
         {
-            _hubFactory = hubFactory;
             _clientFactory = clientFactory;
             _token = TestToken.Get();
         }
@@ -33,21 +36,32 @@ namespace test_integration
         {
 
             //Setup
-            var clientClient = _clientFactory.CreateClient();
+            // var clientClient = _clientFactory.CreateClient();
 
-            clientClient.SetFakeBearerToken((object)_token);
+            // clientClient.SetFakeBearerToken((object)_token);
             
-            var hubClient = _hubFactory.CreateClient();
+            var hubContainer = new TestHubContainer();
 
-            hubClient.SetFakeBearerToken((object)_token);
+            hubContainer.Start();
+            
+            var hubclient = new HttpClient() {
+                BaseAddress = new Uri(hubContainer.GetHostUrl())
+            };
+
+            hubclient.SetFakeBearerToken((object)_token);
 
             //Act
-            var agentIdResponse = await clientClient.GetAsync("/agent");
+            //var agent = await clientClient.GetFromJsonAsync<WorkspaceAgent>("/agent");
+            
+            hubclient.GetAsync("/status").GetAwaiter().GetResult();
 
-            HttpResponseMessage resp = await hubClient.GetAsync("/status");
+            var agentFromHub = await hubContainer.GetReport();
 
             //assert
-            resp.EnsureSuccessStatusCode();
+
+            //Assert.Equal(agent.AgentId.ToString(), agentFromHub);
+            
+
 
         }
     }

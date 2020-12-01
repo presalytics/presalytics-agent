@@ -10,6 +10,7 @@ using hub.Services;
 using hub.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
+using shared.Extensions;
 
 
 namespace hub.Controllers
@@ -32,7 +33,7 @@ namespace hub.Controllers
         [ProducesResponseType(401)]
         public async Task<IActionResult> Get()
         {
-            string userId = User?.Claims.Where(c => c.Type == "https://api.presalytics.io/api_user_id").First().Value;
+            string userId = this.HttpContext.GetPresalyticsUserId();
             try
             {
                 await _hub.Clients.User(userId).AgentSync();

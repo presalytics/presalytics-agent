@@ -33,8 +33,8 @@ namespace client.Services
             if (e is AgentSyncEventArgs)
             {
                 AgentSyncEventArgs agentArgs = (AgentSyncEventArgs)e;
-                await Workspace.GetAgentIdAsync();
-                
+                var agent = await Workspace.GetAgentAsync();
+                await Socket.SyncAgent(agent); 
             } 
         }
 

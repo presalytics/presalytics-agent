@@ -1,14 +1,16 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Serilog;
+using shared.Models;
 
 namespace client.Services
 {
     public interface IWorkspace
     {
         Task RequestStoryUpdate(string storyId);
-        Task<string> GetAgentIdAsync();
+        Task<WorkspaceAgent> GetAgentAsync();
     }
     public class Workspace : IWorkspace
     {
@@ -25,21 +27,13 @@ namespace client.Services
             await Client.GetAsync("/update-story/" + storyId);
         }
 
-        public async Task<string> GetAgentIdAsync()
+        public async Task<WorkspaceAgent> GetAgentAsync()
         {
             Logger.Information("Getting AgentId From workspace Service.");
             try
             {
-                HttpResponseMessage resp =  await Client.GetAsync("/agent");
-                int statusCode = (int)resp.StatusCode;
-                if (200 <= statusCode && statusCode<= 299)
-                {
-                    return await resp.Content.ReadAsStringAsync();
-                }
-                else 
-                {
-                    throw new HttpRequestException("Error retreiving data from workspace service.");
-                }
+                WorkspaceAgent agent =  await Client.GetFromJsonAsync<WorkspaceAgent>("/agent");
+                return agent;
             }
             catch (Exception ex)
             {

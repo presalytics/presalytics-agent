@@ -30,8 +30,8 @@ namespace client.Controllers
         {
             try
             {
-                string agentId = await SocketBroker.Workspace.GetAgentIdAsync();
-                return Ok(agentId);
+                WorkspaceAgent agent = await SocketBroker.Workspace.GetAgentAsync();
+                return Ok(agent);
             } 
             catch (Exception ex)
             {   
@@ -45,11 +45,11 @@ namespace client.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> Post([FromBody]UserAgent agent)
+        public async Task<IActionResult> Post([FromBody]WorkspaceAgent agent)
         {
             try
             {
-                await SocketBroker.Socket.SyncAgent(agent.AgentId.ToString());
+                await SocketBroker.Socket.SyncAgent(agent);
                 return Ok();
             }
             catch (Exception ex)

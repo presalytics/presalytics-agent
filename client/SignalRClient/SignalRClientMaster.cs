@@ -7,6 +7,7 @@ using Serilog;
 using Microsoft.Extensions.DependencyInjection;
 using shared.Extensions;
 using shared.Exceptions;
+using shared.Models;
 using Microsoft.Net.Http.Headers;
 using client.Services;
 
@@ -16,7 +17,7 @@ namespace client.SignalRClient
     {
 
         Task SendStoryToServer(string story);
-        Task SyncAgent(string agentId);
+        Task SyncAgent(WorkspaceAgent agent);
 
         Task<HubConnection> Connect(string url);
         Task<HubConnection> Connect();
@@ -120,11 +121,11 @@ namespace client.SignalRClient
             Log.Information("Story Updated");
         }
 
-        public async Task SyncAgent(string agentId)
+        public async Task SyncAgent(WorkspaceAgent agent)
         {
             HubConnection conn = await GetHubConnection();
-            await conn.InvokeAsync("AgentSync", agentId);
-            Log.Information("AgentId {AgentId} updated at hub", agentId);
+            await conn.InvokeAsync("AgentSync", agent.AgentId, agent.Name);
+            Log.Information("AgentId {AgentId} updated at hub", agent.AgentId);
         }
 
         public async Task<HubConnection> GetHubConnection(string userId)

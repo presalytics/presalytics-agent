@@ -10,7 +10,7 @@ namespace hub.Services
 {
     public interface IAgentManager 
     {
-        Task SyncAgent(Guid agentId);
+        Task SyncAgent(Guid agentId, string name);
         
         Task<List<UserAgent>> GetUserAgents();
     }
@@ -31,10 +31,11 @@ namespace hub.Services
             return userAgents;
         }
 
-        public async Task SyncAgent(Guid agentId)
+        public virtual async Task SyncAgent(Guid agentId, string agentName)
         {
             var agent = new UserAgent() {
-                AgentId = agentId
+                AgentId = agentId,
+                Name = agentName
             };
             await _websiteClient.PostAsJsonAsync<UserAgent>("/user/agents", agent);
         }
