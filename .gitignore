@@ -416,15 +416,7 @@ venv/
 
 # Temp files
 tmp/
-
-# application files
-*token.json
-presalytics.log
-appsettings.*.json
-appsettings.json
-ooxml_automation/dd_api/appsettings.Development.json
-
-# mypy
+\\
 
 .mypy_cache/
 integration_test/token.json

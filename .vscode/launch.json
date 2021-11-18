@@ -5,51 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Hub Debug",
+            "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/hub/bin/Debug/netcoreapp3.1/hub.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/hub",
+            "program": "${workspaceFolder}/cli/bin/Debug/net5.0/presalytics-cli.dll",
+            "args": ["listen"],
+            "cwd": "${workspaceFolder}/cli",
             "stopAtEntry": false,
-            "envFile": "${workspaceFolder}/hub/.env",
-        },
-        {
-            "name": "Client Debug",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/client/bin/Debug/netcoreapp3.1/client.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/client",
-            "stopAtEntry": false,
-            "envFile": "${workspaceFolder}/client/.env",
-        },
-        {
-            "name": "Hub With Mocks",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/test_hub/bin/Debug/netcoreapp3.1/test_hub.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/test_hub",
-            "stopAtEntry": false,
-            "envFile": "${workspaceFolder}/hub/.env",
-        },
-        {
-            "name": "Client With Mocks",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/test_client/bin/Debug/netcoreapp3.1/test_client.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/test_client",
-            "stopAtEntry": false,
-            "envFile": "${workspaceFolder}/client/.env",
-        },
-
-
-
+            "console": "internalConsole"
+        }
     ]
 }
