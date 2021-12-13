@@ -12,6 +12,7 @@ namespace cli.Commands
     using System.Net.Http;
     using CloudNative.CloudEvents.SystemTextJson;
     using CloudNative.CloudEvents.Http;
+    using presalytics.Models;
 
     [Verb("listen", HelpText = "Get your cloudevents from the Presalytics Event Stream.")]
     public class ListenOptions : CommandOptionsBase 
@@ -56,7 +57,7 @@ namespace cli.Commands
         private void WriteConnectedMessage(object sender, EventArgs e)
         {
             if (!this._options.Silent) {
-                Console.WriteLine("Connected to Presaltyics event hub at < {0} >. Listening for Events...", _sr.HubUrl);
+                Console.WriteLine("Connected to Presalytics event hub at < {0} >. Listening for Events...", _sr.HubUrl);
             }
         }
 
@@ -65,10 +66,9 @@ namespace cli.Commands
             if (!this._options.Silent) {
                 Console.WriteLine("Event Received: Type = '{0}', Id = '{1}'", e.Type, e.Id);
                 if (this._options.Verbose) {
-                    string eventJson = JsonSerializer.Serialize(e, new JsonSerializerOptions{
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        WriteIndented = true,
-                    });
+                    JsonSerializerOptions jsonOptions = SerializationExtensions.GetDefaultJsonSerializerOptions();
+                    jsonOptions.WriteIndented = true;
+                    string eventJson = JsonSerializer.Serialize(e, jsonOptions);
                     Console.WriteLine(eventJson);
                 }
             }

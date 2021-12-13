@@ -29,5 +29,5 @@ grep -qxF "$ALIAS_COMMAND" "$HOME/.bashrc" || echo "$ALIAS_COMMAND" >> "$HOME/.b
 
 echo "Removing temporary files..."
 rm -rf presalytics-agent.tar.gz
-
+echo ""
 echo 'Presalytics CLI installed.  Open a new terminal and use command "presalytics --help" for more information'

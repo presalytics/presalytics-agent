@@ -1,5 +1,13 @@
 # Presalytics Agent
 
+## Installation
+
+### Linux
+
+````bash
+wget -O - https://raw.githubusercontent.com/presalytics/presalytics-agent/master/scripts/linux-installer.sh | bash
+````
+
 ## Packaging for Release
 
 ### Linux

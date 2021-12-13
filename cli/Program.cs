@@ -48,6 +48,7 @@ namespace cli
                     );
                     
             } catch (Exception ex) {
+                
                 Log.Fatal(ex, "A Fatal Error occured");
                 Environment.ExitCode = 1;
             } finally {
@@ -60,7 +61,8 @@ namespace cli
             Dictionary<string, string> defaultSettings = new Dictionary<string, string>{
                 {"AUTH_DOMAIN", "login.presalytics.io"},
                 {"CLIENT_ID", "znevv0xfhtHCGDYOXAPV6gSYrAGuJ6Fe"},
-                {"EVENT_HUB_URL", "https://events.api.presalytics.io/hub"}
+                {"EVENT_HUB_URL", "https://events.api.presalytics.io/hub"},
+                {"ASPNETCORE_ENVIRONMENT", "Production"}
             };
             // Add Default Services
             var configuration = new ConfigurationBuilder()
