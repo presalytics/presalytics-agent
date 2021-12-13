@@ -11,7 +11,7 @@ cd $FLDR
 
 echo "Downloading latest release of the Preaslytics CLI..."
 echo ""
-wget https://github.com/presalytics/presalytics-agent/releases/download/v0.1.1-linux/presalytics-agent.tar.gz
+wget https://github.com/presalytics/presalytics-agent/releases/download/v0.1.1/presalytics-agent.tar.gz
 echo ""
 echo "Extracting tar ball..."
 echo ""
