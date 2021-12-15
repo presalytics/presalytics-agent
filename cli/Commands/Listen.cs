@@ -91,6 +91,7 @@ namespace cli.Commands
         {
             try {
                 HttpClient client = _clientFactory.CreateClient();
+                client.BaseAddress = this._options.ForwardTo;
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Add("User-Agent", "presalytics-cli");
                 CloudEventFormatter formatter = new JsonEventFormatter();
