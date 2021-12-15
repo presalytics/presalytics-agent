@@ -61,6 +61,13 @@ namespace cli.Commands
             }
         }
 
+        private void WriteReconnectingMessage(object sender, EventArgs e)
+        {
+            if (!this._options.Silent) {
+                Console.WriteLine("Connected to Presalytics event hub at < {0} >. Listening for Events...", _sr.HubUrl);
+            }
+        }
+
         private void WriteEventHandler(object sender, CloudEvent e)
         {
             if (!this._options.Silent) {

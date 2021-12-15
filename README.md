@@ -5,7 +5,7 @@
 ### Linux
 
 ````bash
-wget -O - https://raw.githubusercontent.com/presalytics/presalytics-agent/master/scripts/linux-installer.sh | bash
+wget --no-cache -O - https://raw.githubusercontent.com/presalytics/presalytics-agent/master/scripts/linux-installer.sh | bash
 ````
 
 ## Packaging for Release
