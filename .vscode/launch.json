@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/cli/bin/Debug/net5.0/presalytics-cli.dll",
-            "args": ["listen", "-v", "-f", "http://localhost:5000/"],
+            "args": ["listen", "-v", "-f", "http://localhost:5010/Events"],
             "cwd": "${workspaceFolder}/cli",
             "stopAtEntry": false,
             "console": "internalConsole",

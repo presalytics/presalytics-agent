@@ -105,8 +105,8 @@ namespace cli.Commands
                     if (msg.IsSuccessStatusCode) {
                         if (this._options.Verbose) Console.WriteLine("Event successfully forwarded to < {0} > ", this._options.ForwardTo);
                     } else {
-                        string message = string.Format("Event forwarding failed. Endpoint {0} responded with status code {1}", this._options.ForwardTo, msg.StatusCode); 
-                        if (!this._options.Silent) Console.WriteLine(message);
+                        string message = string.Format("Event forwarding failed. Endpoint {0} responded with status code: {1} ({2})", this._options.ForwardTo, (int)msg.StatusCode, msg.StatusCode); 
+                        Console.WriteLine(message);
                         _logger.Information(message);
                     }
             } catch (HttpRequestException) {
